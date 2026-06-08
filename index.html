@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>단위 변환기 - 모든 단위를 한 번에</title>
+<meta name="description" content="길이, 무게, 온도, 속도, 면적, 부피 등 모든 단위를 실시간으로 변환하세요. 사용하기 쉬운 무료 단위 변환 도구입니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8896961198330137" crossorigin="anonymous"></script>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DSGL4BJH4R"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-DSGL4BJH4R');
+</script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #0d253d;
+  --navy-light: #1a3450;
+  --indigo: #533afd;
+  --indigo-hover: #462de0;
+  --white: #ffffff;
+  --gray-50: #f8f9fb;
+  --gray-100: #eef0f4;
+  --gray-200: #dde0e8;
+  --gray-400: #8b95a6;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-800: #1f2937;
+  --radius: 9999px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 20px rgba(0,0,0,.1);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,.15);
+}
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 300;
+  background: var(--navy);
+  color: var(--white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+/* Header Ad */
+.header-ad {
+  background: var(--navy-light);
+  display: flex; justify-content: center; align-items: center;
+  padding: 12px 0;
+  min-height: 90px;
+}
+.ad-placeholder {
+  background: rgba(255,255,255,0.05);
+  border: 1px dashed rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--gray-400); letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  padding: 80px 0 60px;
+  text-align: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 15% 50%, rgba(83,58,253,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 350px at 85% 30%, rgba(83,58,253,0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 300px at 50% 80%, rgba(83,58,253,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.hero p {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  color: var(--gray-400);
+  max-width: 560px;
+  margin: 0 auto 24px;
+  font-weight: 300;
+}
+
+/* Search */
+.search-wrap {
+  max-width: 480px;
+  margin: 0 auto 40px;
+  position: relative;
+}
+.search-wrap svg {
+  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  color: var(--gray-400); pointer-events: none;
+}
+.search-wrap input {
+  width: 100%; padding: 14px 16px 14px 46px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.06);
+  color: var(--white);
+  font-size: 15px; font-family: 'Inter', sans-serif; font-weight: 300;
+  outline: none; transition: border-color .2s;
+}
+.search-wrap input::placeholder { color: var(--gray-400); }
+.search-wrap input:focus { border-color: var(--indigo); }
+
+/* Category Grid */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 40px;
+}
+.cat-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  color: var(--gray-400);
+  font-size: 14px; font-family: 'Inter', sans-serif; font-weight: 400;
+  cursor: pointer; transition: all .2s;
+}
+.cat-btn:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+.cat-btn.active {
+  background: var(--indigo);
+  border-color: var(--indigo);
+  color: var(--white);
+}
+.cat-btn svg { flex-shrink: 0; }
+
+/* Converter Card */
+.converter-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-md);
+  padding: 32px;
+  margin-bottom: 32px;
+}
+.converter-card.hidden { display: none; }
+.card-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 24px;
+}
+.card-header svg { color: var(--indigo); }
+.card-header h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Unit Inputs */
+.conversion-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 640px) {
+  .conversion-grid { grid-template-columns: 1fr 1fr; }
+}
+.unit-group { display: flex; flex-direction: column; gap: 8px; }
+.unit-group label {
+  font-size: 13px; font-weight: 400; color: var(--gray-400);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.unit-row {
+  display: flex; gap: 0;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.unit-row select {
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.06);
+  border: none; border-right: 1px solid rgba(255,255,255,0.1);
+  color: var(--white);
+  font-size: 14px; font-family: 'Inter', sans-serif; font-weight: 300;
+  outline: none; min-width: 80px;
+  cursor: pointer;
+}
+.unit-row select option { background: var(--navy); color: var(--white); }
+.unit-row input {
+  flex: 1;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  color: var(--white);
+  font-size: 16px; font-family: 'Inter', sans-serif; font-weight: 300;
+  outline: none;
+  min-width: 0;
+}
+.unit-row input::placeholder { color: var(--gray-500); }
+
+/* Sidebar Layout */
+.content-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 960px) {
+  .content-layout { grid-template-columns: 1fr 300px; }
+}
+.sidebar-ad {
+  position: sticky; top: 20px;
+  display: flex; justify-content: center; align-items: center;
+  min-height: 250px;
+}
+
+/* Nav */
+.top-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  max-width: 1120px; margin: 0 auto;
+}
+.nav-links { display: flex; gap: 6px; flex-wrap: wrap; }
+.nav-links a {
+  color: var(--gray-400);
+  text-decoration: none;
+  font-size: 13px; font-weight: 400;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  transition: all .2s;
+}
+.nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+.nav-links a.cta {
+  background: var(--indigo);
+  color: var(--white);
+}
+.nav-links a.cta:hover { background: var(--indigo-hover); }
+
+/* Footer */
+footer {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 40px 0 24px;
+  margin-top: 40px;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.footer-col h4 {
+  font-size: 12px; font-weight: 600; color: var(--gray-400);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+.footer-col a {
+  display: block;
+  color: var(--gray-500); text-decoration: none;
+  font-size: 13px; font-weight: 300;
+  padding: 4px 0;
+  transition: color .2s;
+}
+.footer-col a:hover { color: var(--white); }
+.footer-bottom {
+  text-align: center;
+  font-size: 12px; color: var(--gray-500);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+/* Values display */
+.all-values {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.03);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.all-values.hidden { display: none; }
+.val-row {
+  display: flex; justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.val-row:last-child { border-bottom: none; }
+.val-label { color: var(--gray-400); }
+.val-number { color: var(--white); font-weight: 400; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<!-- Top Nav -->
+<nav class="top-nav">
+  <a href="/" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--white);font-weight:600;font-size:15px;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    단위변환기
+  </a>
+  <div class="nav-links">
+    <a href="/">변환기</a>
+    <a href="/how-to.html">사용법</a>
+    <a href="/faq.html">FAQ</a>
+  </div>
+</nav>
+
+<!-- Header Ad -->
+<div class="header-ad">
+  <div class="ad-placeholder" style="width:728px;height:90px;">
+    <span>Advertisement 728x90</span>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="container">
+    <h1>모든 단위 변환, 한 곳에서</h1>
+    <p>길이, 무게, 온도, 속도, 면적, 부피 등 모든 단위를 실시간으로 변환하세요. 간단하고 빠르며 정확합니다.</p>
+
+    <div class="search-wrap">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="searchInput" placeholder="변환할 단위 검색 (예: 길이, 온도)">
+    </div>
+
+    <div class="category-grid" id="categoryGrid">
+      <button class="cat-btn active" data-cat="length">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/></svg>
+        길이
+      </button>
+      <button class="cat-btn" data-cat="weight">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        무게
+      </button>
+      <button class="cat-btn" data-cat="temperature">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+        온도
+      </button>
+      <button class="cat-btn" data-cat="speed">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        속도
+      </button>
+      <button class="cat-btn" data-cat="area">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+        면적
+      </button>
+      <button class="cat-btn" data-cat="volume">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M9 4v16"/><path d="M15 4v16"/><path d="M4 9h16"/><path d="M4 15h16"/></svg>
+        부피
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Main Content -->
+<main class="container">
+  <div class="content-layout">
+
+    <!-- Converter Area -->
+    <div>
+
+      <!-- Length -->
+      <div class="converter-card" id="card-length" data-category="length">
+        <div class="card-header">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/></svg>
+          <h2>길이 변환</h2>
+        </div>
+        <div class="conversion-grid">
+          <div class="unit-group">
+            <label>변환할 값</label>
+            <div class="unit-row">
+              <select id="lengthFromUnit" onchange="convert('length')">
+                <option value="mm">밀리미터 (mm)</option>
+                <option value="cm" selected>센티미터 (cm)</option>
+                <option value="m">미터 (m)</option>
+                <option value="km">킬로미터 (km)</option>
+                <option value="in">인치 (in)</option>
+                <option value="ft">피트 (ft)</option>
+                <option value="yd">야드 (yd)</option>
+                <option value="mile">마일 (mile)</option>
+              </select>
+              <input type="number" id="lengthFromVal" placeholder="값 입력" oninput="convert('length')" autocomplete="off">
+            </div>
+          </div>
+          <div class="unit-group">
+            <label>변환 결과</label>
+            <div class="unit-row">
+              <select id="lengthToUnit" onchange="convert('length')">
+                <option value="mm">밀리미터 (mm)</option>
+                <option value="cm">센티미터 (cm)</option>
+                <option value="m" selected>미터 (m)</option>
+                <option value="km">킬로미터 (km)</option>
+                <option value="in">인치 (in)</option>
+                <option value="ft">피트 (ft)</option>
+                <option value="yd">야드 (yd)</option>
+                <option value="mile">마일 (mile)</option>
+              </select>
+              <input type="text" id="lengthToVal" readonly placeholder="결과">
+            </div>
+          </div>
+        </div>
+        <div class="all-values" id="lengthAll"></div>
+      </div>
+
+      <!-- Weight -->
+      <div class="converter-card hidden" id="card-weight" data-category="weight">
+        <div class="card-header">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          <h2>무게 변환</h2>
+        </div>
+        <div class="conversion-grid">
+          <div class="unit-group">
+            <label>변환할 값</label>
+            <div class="unit-row">
+              <select id="weightFromUnit" onchange="convert('weight')">
+                <option value="g" selected>그램 (g)</option>
+                <option value="kg">킬로그램 (kg)</option>
+                <option value="ton">톤 (ton)</option>
+                <option value="lb">파운드 (lb)</option>
+                <option value="oz">온스 (oz)</option>
+              </select>
+              <input type="number" id="weightFromVal" placeholder="값 입력" oninput="convert('weight')" autocomplete="off">
+            </div>
+          </div>
+          <div class="unit-group">
+            <label>변환 결과</label>
+            <div class="unit-row">
+              <select id="weightToUnit" onchange="convert('weight')">
+                <option value="g">그램 (g)</option>
+                <option value="kg" selected>킬로그램 (kg)</option>
+                <option value="ton">톤 (ton)</option>
+                <option value="lb">파운드 (lb)</option>
+                <option value="oz">온스 (oz)</option>
+              </select>
+              <input type="text" id="weightToVal" readonly placeholder="결과">
+            </div>
+          </div>
+        </div>
+        <div class="all-values" id="weightAll"></div>
+      </div>
+
+      <!-- Temperature -->
+      <div class="converter-card hidden" id="card-temperature" data-category="temperature">
+        <div class="card-header">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+          <h2>온도 변환</h2>
+        </div>
+        <div class="conversion-grid">
+          <div class="unit-group">
+            <label>변환할 값</label>
+            <div class="unit-row">
+              <select id="tempFromUnit" onchange="convert('temperature')">
+                <option value="C" selected>섭씨 (C)</option>
+                <option value="F">화씨 (F)</option>
+                <option value="K">켈빈 (K)</option>
+              </select>
+              <input type="number" id="tempFromVal" placeholder="값 입력" oninput="convert('temperature')" autocomplete="off">
+            </div>
+          </div>
+          <div class="unit-group">
+            <label>변환 결과</label>
+            <div class="unit-row">
+              <select id="tempToUnit" onchange="convert('temperature')">
+                <option value="C">섭씨 (C)</option>
+                <option value="F" selected>화씨 (F)</option>
+                <option value="K">켈빈 (K)</option>
+              </select>
+              <input type="text" id="tempToVal" readonly placeholder="결과">
+            </div>
+          </div>
+        </div>
+        <div class="all-values" id="tempAll"></div>
+      </div>
+
+      <!-- Speed -->
+      <div class="converter-card hidden" id="card-speed" data-category="speed">
+        <div class="card-header">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <h2>속도 변환</h2>
+        </div>
+        <div class="conversion-grid">
+          <div class="unit-group">
+            <label>변환할 값</label>
+            <div class="unit-row">
+              <select id="speedFromUnit" onchange="convert('speed')">
+                <option value="kmh" selected>km/h</option>
+                <option value="mph">mph</option>
+                <option value="knot">노트 (knot)</option>
+                <option value="mach">마하 (mach)</option>
+              </select>
+              <input type="number" id="speedFromVal" placeholder="값 입력" oninput="convert('speed')" autocomplete="off">
+            </div>
+          </div>
+          <div class="unit-group">
+            <label>변환 결과</label>
+            <div class="unit-row">
+              <select id="speedToUnit" onchange="convert('speed')">
+                <option value="kmh">km/h</option>
+                <option value="mph" selected>mph</option>
+                <option value="knot">노트 (knot)</option>
+                <option value="mach">마하 (mach)</option>
+              </select>
+              <input type="text" id="speedToVal" readonly placeholder="결과">
+            </div>
+          </div>
+        </div>
+        <div class="all-values" id="speedAll"></div>
+      </div>
+
+      <!-- Area -->
+      <div class="converter-card hidden" id="card-area" data-category="area">
+        <div class="card-header">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+          <h2>면적 변환</h2>
+        </div>
+        <div class="conversion-grid">
+          <div class="unit-group">
+            <label>변환할 값</label>
+            <div class="unit-row">
+              <select id="areaFromUnit" onchange="convert('area')">
+                <option value="sqm" selected>제곱미터 (m&sup2;)</option>
+                <option value="sqft">제곱피트 (ft&sup2;)</option>
+                <option value="acre">에이커 (acre)</option>
+                <option value="hectare">헥타르 (ha)</option>
+              </select>
+              <input type="number" id="areaFromVal" placeholder="값 입력" oninput="convert('area')" autocomplete="off">
+            </div>
+          </div>
+          <div class="unit-group">
+            <label>변환 결과</label>
+            <div class="unit-row">
+              <select id="areaToUnit" onchange="convert('area')">
+                <option value="sqm">제곱미터 (m&sup2;)</option>
+                <option value="sqft" selected>제곱피트 (ft&sup2;)</option>
+                <option value="acre">에이커 (acre)</option>
+                <option value="hectare">헥타르 (ha)</option>
+              </select>
+              <input type="text" id="areaToVal" readonly placeholder="결과">
+            </div>
+          </div>
+        </div>
+        <div class="all-values" id="areaAll"></div>
+      </div>
+
+      <!-- Volume -->
+      <div class="converter-card hidden" id="card-volume" data-category="volume">
+        <div class="card-header">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M9 4v16"/><path d="M15 4v16"/><path d="M4 9h16"/><path d="M4 15h16"/></svg>
+          <h2>부피 변환</h2>
+        </div>
+        <div class="conversion-grid">
+          <div class="unit-group">
+            <label>변환할 값</label>
+            <div class="unit-row">
+              <select id="volumeFromUnit" onchange="convert('volume')">
+                <option value="ml" selected>밀리리터 (mL)</option>
+                <option value="L">리터 (L)</option>
+                <option value="gal">갤런 (gal)</option>
+                <option value="cup">컵 (cup)</option>
+              </select>
+              <input type="number" id="volumeFromVal" placeholder="값 입력" oninput="convert('volume')" autocomplete="off">
+            </div>
+          </div>
+          <div class="unit-group">
+            <label>변환 결과</label>
+            <div class="unit-row">
+              <select id="volumeToUnit" onchange="convert('volume')">
+                <option value="ml">밀리리터 (mL)</option>
+                <option value="L" selected>리터 (L)</option>
+                <option value="gal">갤런 (gal)</option>
+                <option value="cup">컵 (cup)</option>
+              </select>
+              <input type="text" id="volumeToVal" readonly placeholder="결과">
+            </div>
+          </div>
+        </div>
+        <div class="all-values" id="volumeAll"></div>
+      </div>
+
+    </div>
+
+    <!-- Sidebar Ad -->
+    <aside class="sidebar-ad">
+      <div class="ad-placeholder" style="width:300px;height:250px;">
+        <span>Advertisement 300x250</span>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>단위변환기</h4>
+        <a href="/">길이 변환</a>
+        <a href="/">무게 변환</a>
+        <a href="/">온도 변환</a>
+        <a href="/">속도 변환</a>
+        <a href="/">면적 변환</a>
+        <a href="/">부피 변환</a>
+      </div>
+      <div class="footer-col">
+        <h4>도움말</h4>
+        <a href="/how-to.html">사용 방법</a>
+        <a href="/faq.html">자주 묻는 질문</a>
+      </div>
+      <div class="footer-col">
+        <h4>정보</h4>
+        <a href="/about.html">소개</a>
+        <a href="/contact.html">문의하기</a>
+        <a href="/privacy.html">개인정보처리방침</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 단위변환기. 모든 권리 보유.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== Conversion Factors (base unit) =====
+const CONV = {
+  length: {
+    base: 'm',
+    toBase: { mm: 0.001, cm: 0.01, m: 1, km: 1000, in: 0.0254, ft: 0.3048, yd: 0.9144, mile: 1609.344 },
+    names: { mm: 'mm', cm: 'cm', m: 'm', km: 'km', in: 'in', ft: 'ft', yd: 'yd', mile: 'mile' }
+  },
+  weight: {
+    base: 'g',
+    toBase: { g: 1, kg: 1000, ton: 1e6, lb: 453.59237, oz: 28.349523125 },
+    names: { g: 'g', kg: 'kg', ton: 't', lb: 'lb', oz: 'oz' }
+  },
+  temperature: {
+    special: true
+  },
+  speed: {
+    base: 'kmh',
+    toBase: { kmh: 1, mph: 1.609344, knot: 1.852, mach: 1234.8 },
+    names: { kmh: 'km/h', mph: 'mph', knot: 'kn', mach: 'mach' }
+  },
+  area: {
+    base: 'sqm',
+    toBase: { sqm: 1, sqft: 0.09290304, acre: 4046.8564224, hectare: 10000 },
+    names: { sqm: 'm\u00b2', sqft: 'ft\u00b2', acre: 'ac', hectare: 'ha' }
+  },
+  volume: {
+    base: 'ml',
+    toBase: { ml: 1, L: 1000, gal: 3785.411784, cup: 236.5882365 },
+    names: { ml: 'mL', L: 'L', gal: 'gal', cup: 'cup' }
+  }
+};
+
+function tempToK(value, from) {
+  if (from === 'C') return value + 273.15;
+  if (from === 'F') return (value + 459.67) * 5/9;
+  return value; // K
+}
+function tempFromK(value, to) {
+  if (to === 'C') return value - 273.15;
+  if (to === 'F') return value * 9/5 - 459.67;
+  return value; // K
+}
+
+function formatNum(v) {
+  if (v === undefined || v === null || isNaN(v)) return '';
+  if (Math.abs(v) >= 1e9) return v.toExponential(4);
+  if (Number.isInteger(v) && Math.abs(v) < 1e15) return v.toString();
+  return parseFloat(v.toFixed(8)).toString();
+}
+
+function convertAll(cat, fromVal, fromUnit) {
+  const cfg = CONV[cat];
+  if (!fromVal || isNaN(fromVal)) return {};
+  const val = parseFloat(fromVal);
+  const results = {};
+  if (cfg.special) {
+    const k = tempToK(val, fromUnit);
+    for (const u of ['C','F','K']) {
+      results[u] = tempFromK(k, u);
+    }
+  } else {
+    const base = val * cfg.toBase[fromUnit];
+    for (const [u, factor] of Object.entries(cfg.toBase)) {
+      results[u] = base / factor;
+    }
+  }
+  return results;
+}
+
+function convert(cat) {
+  const prefixMap = { length: 'length', weight: 'weight', temperature: 'temp', speed: 'speed', area: 'area', volume: 'volume' };
+  const p = prefixMap[cat];
+  const fromVal = document.getElementById(p + 'FromVal');
+  const fromUnit = document.getElementById(p + 'FromUnit');
+  const toVal = document.getElementById(p + 'ToVal');
+  const toUnit = document.getElementById(p + 'ToUnit');
+  const allDiv = document.getElementById(p + 'All');
+  if (!fromVal || !fromUnit || !toVal || !toUnit) return;
+
+  const results = convertAll(cat, fromVal.value, fromUnit.value);
+  if (!results || Object.keys(results).length === 0) {
+    toVal.value = '';
+    allDiv.classList.add('hidden');
+    return;
+  }
+
+  // Set primary result
+  toVal.value = formatNum(results[toUnit.value]);
+
+  // Show all values
+  const cfg = CONV[cat];
+  const names = cfg.special ? { C: 'C', F: 'F', K: 'K' } : cfg.names;
+  let html = '';
+  for (const [u, v] of Object.entries(results)) {
+    const label = names[u] || u;
+    html += '<div class="val-row"><span class="val-label">' + label + '</span><span class="val-number">' + formatNum(v) + '</span></div>';
+  }
+  allDiv.innerHTML = html;
+  allDiv.classList.remove('hidden');
+}
+
+// Category switching
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const cat = this.dataset.cat;
+    document.querySelectorAll('.converter-card').forEach(c => c.classList.add('hidden'));
+    const card = document.getElementById('card-' + cat);
+    if (card) {
+      card.classList.remove('hidden');
+      // Auto-scroll
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// Search filtering
+document.getElementById('searchInput').addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    const text = btn.textContent.toLowerCase();
+    const match = !q || text.includes(q);
+    btn.style.display = match ? '' : 'none';
+  });
+});
+
+// Show first category by default
+convert('length');
+</script>
+</body>
+</html>
