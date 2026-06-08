@@ -1,501 +1,1030 @@
-1|<!DOCTYPE html>
-2|<html lang="ko">
-3|<head>
-4|<meta charset="UTF-8">
-5|<meta name="viewport" content="width=device-width, initial-scale=1.0">
-6|<title>단위 변환기 - 모든 단위를 한 번에</title>
-7|<meta name="description" content="길이, 무게, 온도, 속도, 면적, 부피 등 모든 단위를 실시간으로 변환하세요. 사용하기 쉬운 무료 단위 변환 도구입니다.">
-8|<link rel="preconnect" href="https://fonts.googleapis.com">
-9|<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-10|<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;760&display=swap" rel="stylesheet">
-11|
-12|<!-- Google AdSense -->
-13|<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8896961198330137" crossorigin="anonymous"></script>
-14|
-15|<!-- Google Analytics -->
-16|<script async src="https://www.googletagmanager.com/gtag/js?id=G-DSGL4BJH4R"></script>
-17|<script>
-18|window.dataLayer = window.dataLayer || [];
-19|function gtag(){dataLayer.push(arguments);}
-20|gtag('js', new Date());
-21|gtag('config', 'G-DSGL4BJH4R');
-22|</script>
-23|
-24|<style>
-25|/* ===== Clean Design System Tokens ===== */
-26|:root {
-27|  --bg: #ffffff;
-28|  --surface: #f7f7f7;
-29|  --surface-warm: #eeeeee;
-30|  --fg: #111111;
-31|  --fg-2: #3a3a3a;
-32|  --muted: #707070;
-33|  --meta: #111111;
-34|  --border: #d9d9d9;
-35|  --border-soft: #eeeeee;
-36|  --accent: #111111;
-37|  --accent-on: #ffffff;
-38|  --accent-hover: color-mix(in oklab, var(--accent), black 8%);
-39|  --accent-active: color-mix(in oklab, var(--accent), black 14%);
-40|  --success: #168a46;
-41|  --warn: #b7791f;
-42|  --danger: #c53030;
-43|  --font-display: Inter, system-ui, sans-serif;
-44|  --font-body: Inter, system-ui, sans-serif;
-45|  --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
-46|  --text-xs: 12px;
-47|  --text-sm: 14px;
-48|  --text-base: 16px;
-49|  --text-lg: 18px;
-50|  --text-xl: 24px;
-51|  --text-2xl: 36px;
-52|  --text-3xl: 54px;
-53|  --text-4xl: 76px;
-54|  --leading-body: 1.52;
-55|  --leading-tight: 1.06;
-56|  --tracking-display: -0.025em;
-57|  --space-1: 4px;
-58|  --space-2: 8px;
-59|  --space-3: 12px;
-60|  --space-4: 16px;
-61|  --space-5: 20px;
-62|  --space-6: 24px;
-63|  --space-8: 32px;
-64|  --space-12: 48px;
-65|  --section-y-desktop: 96px;
-66|  --section-y-tablet: 68px;
-67|  --section-y-phone: 48px;
-68|  --radius-sm: 4px;
-69|  --radius-md: 8px;
-70|  --radius-lg: 12px;
-71|  --radius-pill: 9999px;
-72|  --elev-flat: none;
-73|  --elev-ring: 0 0 0 1px var(--border);
-74|  --elev-raised: 0 16px 40px rgba(0, 0, 0, 0.10);
-75|  --focus-ring: 0 0 0 3px rgba(17, 17, 17, 0.18);
-76|  --motion-fast: 150ms;
-77|  --motion-base: 240ms;
-78|  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-79|  --container-max: 1180px;
-80|  --container-gutter-desktop: 36px;
-81|  --container-gutter-tablet: 24px;
-82|  --container-gutter-phone: 16px;
-83|}
-84|
-85|*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-86|html { -webkit-font-smoothing: antialiased; }
-87|body {
-88|  min-height: 100vh;
-89|  background: var(--bg);
-90|  color: var(--fg);
-91|  font-family: var(--font-body);
-92|  font-size: var(--text-base);
-93|  line-height: var(--leading-body);
-94|}
-95|.page { min-height: 100vh; background: linear-gradient(135deg, #ffffff 0%, #f7f7f7 100%); }
-96|.container { max-width: var(--container-max); margin-inline: auto; padding-inline: var(--container-gutter-desktop); }
-97|section { padding-block: var(--section-y-desktop); }
-98|@media (max-width: 1023px) { .container { padding-inline: var(--container-gutter-tablet); } section { padding-block: var(--section-y-tablet); } }
-99|@media (max-width: 639px) { .container { padding-inline: var(--container-gutter-phone); } section { padding-block: var(--section-y-phone); } }
-100|
-101|h1, h2, h3, h4, p { margin: 0; }
-102|h1, h2, h3 { font-family: var(--font-display); line-height: var(--leading-tight); letter-spacing: var(--tracking-display); }
-103|h1 { max-width: 840px; font-size: var(--text-3xl); font-weight: 760; }
-104|h2 { font-size: var(--text-2xl); font-weight: 700; }
-105|h3 { font-size: var(--text-xl); font-weight: 700; }
-106|
-107|a { color: inherit; text-decoration: none; }
-108|img { max-width: 100%; display: block; }
-109|
-110|/* ===== Clean Utility Classes ===== */
-111|.eyebrow {
-112|  color: var(--meta);
-113|  font-family: var(--font-mono);
-114|  font-size: var(--text-xs);
-115|  font-weight: 700;
-116|  letter-spacing: 0.12em;
-117|  text-transform: uppercase;
-118|}
-119|.lead { max-width: 640px; color: var(--fg-2); font-size: var(--text-lg); }
-120|.stack > * + * { margin-block-start: var(--space-4); }
-121|.actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-block-start: var(--space-6); }
-122|
-123|/* ===== Buttons ===== */
-124|.btn {
-125|  display: inline-flex;
-126|  align-items: center;
-127|  justify-content: center;
-128|  min-height: 44px;
-129|  padding: 0 var(--space-5);
-130|  border: 1px solid transparent;
-131|  border-radius: var(--radius-md);
-132|  font: 700 var(--text-sm) / 1 var(--font-body);
-133|  color: inherit;
-134|  text-decoration: none;
-135|  cursor: pointer;
-136|  transition: background-color var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
-137|  gap: var(--space-2);
-138|}
-139|.btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
-140|.btn-primary { background: var(--accent); color: var(--accent-on); }
-141|.btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-142|.btn-primary:active { background: var(--accent-active); transform: translateY(0); }
-143|.btn-secondary {
-144|  background: var(--surface);
-145|  color: var(--fg);
-146|  border-color: var(--border);
-147|  box-shadow: var(--elev-ring);
-148|}
-149|.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-150|.btn-ghost {
-151|  background: transparent;
-152|  color: var(--fg-2);
-153|  border-color: transparent;
-154|}
-155|.btn-ghost:hover { background: var(--surface); color: var(--accent); }
-156|.btn-icon {
-157|  width: 44px;
-158|  height: 44px;
-159|  padding: 0;
-160|  min-height: 44px;
-161|}
-162|
-163|/* ===== Panel ===== */
-164|.panel {
-165|  background: var(--surface);
-166|  border: 1px solid var(--border);
-167|  border-radius: var(--radius-lg);
-168|  box-shadow: var(--elev-raised);
-169|  overflow: hidden;
-170|}
-171|.panel-head {
-172|  display: flex;
-173|  justify-content: space-between;
-174|  align-items: center;
-175|  gap: var(--space-4);
-176|  padding: var(--space-5);
-177|  border-bottom: 1px solid var(--border-soft);
-178|}
-179|.panel-body { padding: var(--space-5); }
-180|
-181|/* ===== Inputs ===== */
-182|.field { display: grid; gap: var(--space-2); }
-183|.field label {
-184|  color: var(--fg-2);
-185|  font-size: var(--text-sm);
-186|  font-weight: 700;
-187|}
-188|input, select {
-189|  width: 100%;
-190|  min-height: 46px;
-191|  padding: 0 var(--space-4);
-192|  border: 1px solid var(--border);
-193|  border-radius: var(--radius-sm);
-194|  background: var(--surface);
-195|  color: var(--fg);
-196|  font: inherit;
-197|  font-size: var(--text-base);
-198|  transition: border-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
-199|}
-200|input:focus, select:focus { outline: none; box-shadow: var(--focus-ring); border-color: var(--accent); }
-201|input[readonly] { background: var(--surface-warm); cursor: default; }
-202|input::placeholder { color: var(--muted); }
-203|select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23707070' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
-204|
-205|/* ===== Tiles ===== */
-206|.tile {
-207|  padding: var(--space-5);
-208|  border: 1px solid var(--border);
-209|  border-radius: var(--radius-md);
-210|  background: var(--surface);
-211|}
-212|
-213|/* ===== Metrics ===== */
-214|.metric strong { display: block; font-family: var(--font-display); font-size: var(--text-2xl); line-height: var(--leading-tight); }
-215|.metric span { color: var(--muted); font-size: var(--text-sm); }
-216|
-217|/* ===== Top Nav (Clean style) ===== */
-218|.top-nav {
-219|  display: flex;
-220|  align-items: center;
-221|  justify-content: space-between;
-222|  gap: var(--space-4);
-223|  padding: var(--space-3) var(--container-gutter-desktop);
-224|  max-width: var(--container-max);
-225|  margin-inline: auto;
-226|}
-227|.nav-links { display: flex; gap: var(--space-1); flex-wrap: wrap; }
-228|.nav-links a {
-229|  color: var(--fg-2);
-230|  font-size: var(--text-sm);
-231|  font-weight: 500;
-232|  padding: var(--space-2) var(--space-3);
-233|  border-radius: var(--radius-md);
-234|  transition: background-color var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
-235|}
-236|.nav-links a:hover { background: var(--surface); color: var(--accent); }
-237|
-238|/* ===== Hero / Header ===== */
-239|.converter-hero {
-240|  text-align: center;
-241|  padding-block: var(--space-12) var(--space-6);
-242|}
-243|
-244|/* ===== Category Tabs (Clean tabs style) ===== */
-245|.tab-row {
-246|  display: flex;
-247|  flex-wrap: wrap;
-248|  gap: var(--space-2);
-249|  justify-content: center;
-250|  margin-block: var(--space-6);
-251|}
-252|.tab-btn {
-253|  display: inline-flex;
-254|  align-items: center;
-255|  gap: var(--space-2);
-256|  padding: var(--space-2) var(--space-4);
-257|  border: 1px solid var(--border);
-258|  border-radius: var(--radius-pill);
-259|  background: var(--bg);
-260|  color: var(--fg-2);
-261|  font: 500 var(--text-sm) / 1 var(--font-body);
-262|  cursor: pointer;
-263|  transition: all var(--motion-fast) var(--ease-standard);
-264|}
-265|.tab-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--surface); }
-266|.tab-btn.active {
-267|  background: var(--accent);
-268|  border-color: var(--accent);
-269|  color: var(--accent-on);
-270|}
-271|.tab-btn svg { flex-shrink: 0; }
-272|
-273|/* ===== Search ===== */
-274|.search-wrap {
-275|  max-width: 400px;
-276|  margin: 0 auto;
-277|  position: relative;
-278|}
-279|.search-wrap svg {
-280|  position: absolute; left: var(--space-4); top: 50%; transform: translateY(-50%);
-281|  color: var(--muted); pointer-events: none;
-282|  z-index: 1;
-283|}
-284|.search-wrap input {
-285|  padding-left: 44px;
-286|  border-radius: var(--radius-pill);
-287|  background: var(--surface);
-288|  border-color: var(--border);
-289|}
-290|.search-wrap input:focus { border-color: var(--accent); }
-291|
-292|/* ===== Converter Layout ===== */
-293|.content-layout {
-294|  display: grid;
-295|  grid-template-columns: 1fr;
-296|  gap: var(--space-6);
-297|}
-298|@media (min-width: 960px) {
-299|  .content-layout { grid-template-columns: 1fr 300px; }
-300|}
-301|
-302|.converter-card { display: block; }
-303|.converter-card.hidden { display: none; }
-304|
-305|/* ===== Conversion Row ===== */
-306|.conversion-pair {
-307|  display: grid;
-308|  grid-template-columns: 1fr;
-309|  gap: var(--space-4);
-310|  align-items: end;
-311|}
-312|@media (min-width: 640px) {
-313|  .conversion-pair { grid-template-columns: 1fr auto 1fr; }
-314|}
-315|.conv-group { display: grid; gap: var(--space-2); }
-316|.conv-group label {
-317|  color: var(--fg-2);
-318|  font-size: var(--text-sm);
-319|  font-weight: 700;
-320|}
-321|.conv-row {
-322|  display: flex;
-323|  gap: 0;
-324|  border: 1px solid var(--border);
-325|  border-radius: var(--radius-md);
-326|  overflow: hidden;
-327|  background: var(--bg);
-328|}
-329|.conv-row select {
-330|  flex: 0 0 auto;
-331|  min-width: 90px;
-332|  border: none;
-333|  border-right: 1px solid var(--border);
-334|  border-radius: 0;
-335|  background: var(--surface);
-336|}
-337|.conv-row input {
-338|  flex: 1;
-339|  min-width: 0;
-340|  border: none;
-341|  border-radius: 0;
-342|  background: var(--bg);
-343|}
-344|.conv-row input:focus { box-shadow: none; }
-345|.conv-row:focus-within { box-shadow: var(--focus-ring); }
-346|.conv-row input[readonly] { background: var(--surface); }
-347|
-348|/* ===== Swap Button ===== */
-349|.swap-wrap {
-350|  display: flex;
-351|  justify-content: center;
-352|  padding: var(--space-2) 0;
-353|}
-354|@media (max-width: 639px) {
-355|  .swap-wrap { padding: 0; }
-356|}
-357|
-358|/* ===== All Values ===== */
-359|.all-values {
-360|  margin-top: var(--space-4);
-361|  display: grid;
-362|  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-363|  gap: var(--space-2);
-364|}
-365|.all-values.hidden { display: none; }
-366|.val-item {
-367|  padding: var(--space-3) var(--space-4);
-368|  border: 1px solid var(--border-soft);
-369|  border-radius: var(--radius-md);
-370|  background: var(--surface);
-371|  display: flex;
-372|  justify-content: space-between;
-373|  align-items: center;
-374|  gap: var(--space-2);
-375|}
-376|.val-label {
-377|  color: var(--muted);
-378|  font-size: var(--text-sm);
-379|  font-weight: 500;
-380|}
-381|.val-number {
-382|  color: var(--fg);
-383|  font-size: var(--text-sm);
-384|  font-weight: 600;
-385|  font-variant-numeric: tabular-nums;
-386|  text-align: right;
-387|}
-388|
-389|/* ===== Ad Placeholder ===== */
-390|.ad-wrap {
-391|  display: flex;
-392|  justify-content: center;
-393|  align-items: center;
-394|  padding: var(--space-3) 0;
-395|}
-396|.ad-placeholder {
-397|  background: var(--surface);
-398|  border: 1px dashed var(--border);
-399|  display: flex;
-400|  align-items: center;
-401|  justify-content: center;
-402|  font-size: var(--text-xs);
-403|  color: var(--muted);
-404|  letter-spacing: 0.5px;
-405|  text-transform: uppercase;
-406|  border-radius: var(--radius-md);
-407|}
-408|.sidebar-ad {
-409|  position: sticky;
-410|  top: var(--space-5);
-411|  display: flex;
-412|  justify-content: center;
-413|  align-items: center;
-414|  min-height: 250px;
-415|}
-416|
-417|/* ===== Footer ===== */
-418|footer {
-419|  border-top: 1px solid var(--border-soft);
-420|  padding: var(--space-8) 0 var(--space-5);
-421|  margin-top: var(--space-8);
-422|}
-423|.footer-grid {
-424|  display: grid;
-425|  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-426|  gap: var(--space-6);
-427|  margin-bottom: var(--space-6);
-428|}
-429|.footer-col h4 {
-430|  font-size: var(--text-xs);
-431|  font-weight: 700;
-432|  color: var(--muted);
-433|  text-transform: uppercase;
-434|  letter-spacing: 0.08em;
-435|  margin-bottom: var(--space-3);
-436|  font-family: var(--font-display);
-437|}
-438|.footer-col a {
-439|  display: block;
-440|  color: var(--fg-2);
-441|  font-size: var(--text-sm);
-442|  font-weight: 400;
-443|  padding: var(--space-1) 0;
-444|  transition: color var(--motion-fast) var(--ease-standard);
-445|}
-446|.footer-col a:hover { color: var(--accent); }
-447|.footer-bottom {
-448|  text-align: center;
-449|  font-size: var(--text-sm);
-450|  color: var(--muted);
-451|  padding-top: var(--space-4);
-452|  border-top: 1px solid var(--border-soft);
-453|}
-454|
-455|/* ===== Scrollbar ===== */
-456|::-webkit-scrollbar { width: 6px; }
-457|::-webkit-scrollbar-track { background: transparent; }
-458|::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-459|
-460|/* ===== Responsive refinements ===== */
-461|@media (max-width: 639px) {
-462|  h1 { font-size: var(--text-2xl); }
-463|  .top-nav { padding-inline: var(--container-gutter-phone); }
-464|  .tab-row { gap: var(--space-1); }
-465|  .tab-btn { padding: var(--space-1) var(--space-3); font-size: var(--text-xs); }
-466|  .converter-card .panel-body { padding: var(--space-4); }
-467|  .val-item { grid-template-columns: 1fr; }
-468|  .all-values { grid-template-columns: 1fr 1fr; }
-469|}
-470|</style>
-471|</head>
-472|<body>
-473|<div class="page">
-474|
-475|<!-- Top Nav -->
-476|<nav class="top-nav">
-477|  <a href="/" style="display:flex;align-items:center;gap:var(--space-2);font-weight:700;font-size:var(--text-base);color:var(--fg);font-family:var(--font-display);letter-spacing:var(--tracking-display);">
-478|    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-479|    단위변환기
-480|  </a>
-481|  <div class="nav-links">
-482|    <a href="/">변환기</a>
-483|    <a href="/how-to.html">사용법</a>
-484|    <a href="/faq.html">FAQ</a>
-485|  </div>
-486|</nav>
-487|
-488|<!-- Header Ad -->
-489|<div class="ad-wrap">
-490|  <div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;">
-491|    <span>Advertisement 728x90</span>
-492|  </div>
-493|</div>
-494|
-495|<!-- Hero -->
-496|<section class="converter-hero">
-497|  <div class="container stack" style="align-items:center;">
-498|    <p class="eyebrow">Unit Converter</p>
-499|    <h1 style="margin-inline:auto;">모든 단위 변환, 한 곳에서</h1>
-500|    <p class="lead" style="margin-inline:auto;text-align:center;">길이, 무게, 온도, 속도, 면적, 부피 등 모든 단위를 실시간으로 변환하세요.</p>
-501|
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>단위 변환기 - 모든 단위를 한 번에</title>
+<meta name="description" content="길이, 무게, 온도, 속도, 면적, 부피 등 모든 단위를 실시간으로 변환하세요. 사용하기 쉬운 무료 단위 변환 도구입니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;760&display=swap" rel="stylesheet">
+
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8896961198330137" crossorigin="anonymous"></script>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DSGL4BJH4R"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-DSGL4BJH4R');
+</script>
+
+<style>
+/* ===== Clean Design System Tokens ===== */
+:root {
+  --bg: #ffffff;
+  --surface: #f7f7f7;
+  --surface-warm: #eeeeee;
+  --fg: #111111;
+  --fg-2: #3a3a3a;
+  --muted: #707070;
+  --meta: #111111;
+  --border: #d9d9d9;
+  --border-soft: #eeeeee;
+  --accent: #111111;
+  --accent-on: #ffffff;
+  --success: #168a46;
+  --warn: #b7791f;
+  --danger: #c53030;
+  --font-display: Inter, system-ui, sans-serif;
+  --font-body: Inter, system-ui, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-2xl: 36px;
+  --text-3xl: 54px;
+  --text-4xl: 76px;
+  --leading-body: 1.52;
+  --leading-tight: 1.06;
+  --tracking-display: -0.025em;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --section-y-desktop: 96px;
+  --section-y-tablet: 68px;
+  --section-y-phone: 48px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+  --elev-flat: none;
+  --elev-ring: 0 0 0 1px var(--border);
+  --elev-raised: 0 16px 40px rgba(0, 0, 0, 0.10);
+  --focus-ring: 0 0 0 3px rgba(17, 17, 17, 0.18);
+  --motion-fast: 150ms;
+  --motion-base: 240ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --container-max: 1180px;
+  --container-gutter-desktop: 36px;
+  --container-gutter-tablet: 24px;
+  --container-gutter-phone: 16px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; }
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+}
+.page { min-height: 100vh; background: linear-gradient(135deg, #ffffff 0%, #f7f7f7 100%); }
+.container { max-width: var(--container-max); margin-inline: auto; padding-inline: var(--container-gutter-desktop); }
+section { padding-block: var(--section-y-desktop); }
+@media (max-width: 1023px) { .container { padding-inline: var(--container-gutter-tablet); } section { padding-block: var(--section-y-tablet); } }
+@media (max-width: 639px) { .container { padding-inline: var(--container-gutter-phone); } section { padding-block: var(--section-y-phone); } }
+
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { font-family: var(--font-display); line-height: var(--leading-tight); letter-spacing: var(--tracking-display); }
+h1 { max-width: 840px; font-size: var(--text-3xl); font-weight: 760; }
+h2 { font-size: var(--text-2xl); font-weight: 700; }
+h3 { font-size: var(--text-xl); font-weight: 700; }
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+/* ===== Clean Utility Classes ===== */
+.eyebrow {
+  color: var(--meta);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.lead { max-width: 640px; color: var(--fg-2); font-size: var(--text-lg); }
+.stack > * + * { margin-block-start: var(--space-4); }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-block-start: var(--space-6); }
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font: 700 var(--text-sm) / 1 var(--font-body);
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
+  gap: var(--space-2);
+}
+.btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.btn-primary { background: var(--accent); color: var(--accent-on); }
+.btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-primary:active { background: var(--accent-active); transform: translateY(0); }
+.btn-secondary {
+  background: var(--surface);
+  color: var(--fg);
+  border-color: var(--border);
+  box-shadow: var(--elev-ring);
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+.btn-ghost {
+  background: transparent;
+  color: var(--fg-2);
+  border-color: transparent;
+}
+.btn-ghost:hover { background: var(--surface); color: var(--accent); }
+.btn-icon {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  min-height: 44px;
+}
+
+/* ===== Panel ===== */
+.panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elev-raised);
+  overflow: hidden;
+}
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--border-soft);
+}
+.panel-body { padding: var(--space-5); }
+
+/* ===== Inputs ===== */
+.field { display: grid; gap: var(--space-2); }
+.field label {
+  color: var(--fg-2);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+input, select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--fg);
+  font: inherit;
+  font-size: var(--text-base);
+  transition: border-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
+}
+input:focus, select:focus { outline: none; box-shadow: var(--focus-ring); border-color: var(--accent); }
+input[readonly] { background: var(--surface-warm); cursor: default; }
+input::placeholder { color: var(--muted); }
+select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23707070' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+
+/* ===== Tiles ===== */
+.tile {
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+/* ===== Metrics ===== */
+.metric strong { display: block; font-family: var(--font-display); font-size: var(--text-2xl); line-height: var(--leading-tight); }
+.metric span { color: var(--muted); font-size: var(--text-sm); }
+
+/* ===== Top Nav (Clean style) ===== */
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--container-gutter-desktop);
+  max-width: var(--container-max);
+  margin-inline: auto;
+}
+.nav-links { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+.nav-links a {
+  color: var(--fg-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  transition: background-color var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+}
+.nav-links a:hover { background: var(--surface); color: var(--accent); }
+
+/* ===== Hero / Header ===== */
+.converter-hero {
+  text-align: center;
+  padding-block: var(--space-12) var(--space-6);
+}
+
+/* ===== Category Tabs (Clean tabs style) ===== */
+.tab-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+  margin-block: var(--space-6);
+}
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  color: var(--fg-2);
+  font: 500 var(--text-sm) / 1 var(--font-body);
+  cursor: pointer;
+  transition: all var(--motion-fast) var(--ease-standard);
+}
+.tab-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--surface); }
+.tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-on);
+}
+.tab-btn svg { flex-shrink: 0; }
+
+/* ===== Search ===== */
+.search-wrap {
+  max-width: 400px;
+  margin: 0 auto;
+  position: relative;
+}
+.search-wrap svg {
+  position: absolute; left: var(--space-4); top: 50%; transform: translateY(-50%);
+  color: var(--muted); pointer-events: none;
+  z-index: 1;
+}
+.search-wrap input {
+  padding-left: 44px;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  border-color: var(--border);
+}
+.search-wrap input:focus { border-color: var(--accent); }
+
+/* ===== Converter Layout ===== */
+.content-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+@media (min-width: 960px) {
+  .content-layout { grid-template-columns: 1fr 300px; }
+}
+
+.converter-card { display: block; }
+.converter-card.hidden { display: none; }
+
+/* ===== Conversion Row ===== */
+.conversion-pair {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  align-items: end;
+}
+@media (min-width: 640px) {
+  .conversion-pair { grid-template-columns: 1fr auto 1fr; }
+}
+.conv-group { display: grid; gap: var(--space-2); }
+.conv-group label {
+  color: var(--fg-2);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+.conv-row {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg);
+}
+.conv-row select {
+  flex: 0 0 auto;
+  min-width: 90px;
+  border: none;
+  border-right: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--surface);
+}
+.conv-row input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  border-radius: 0;
+  background: var(--bg);
+}
+.conv-row input:focus { box-shadow: none; }
+.conv-row:focus-within { box-shadow: var(--focus-ring); }
+.conv-row input[readonly] { background: var(--surface); }
+
+/* ===== Swap Button ===== */
+.swap-wrap {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-2) 0;
+}
+@media (max-width: 639px) {
+  .swap-wrap { padding: 0; }
+}
+
+/* ===== All Values ===== */
+.all-values {
+  margin-top: var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-2);
+}
+.all-values.hidden { display: none; }
+.val-item {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+}
+.val-label {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+.val-number {
+  color: var(--fg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* ===== Ad Placeholder ===== */
+.ad-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-3) 0;
+}
+.ad-placeholder {
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-radius: var(--radius-md);
+}
+.sidebar-ad {
+  position: sticky;
+  top: var(--space-5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 250px;
+}
+
+/* ===== Footer ===== */
+footer {
+  border-top: 1px solid var(--border-soft);
+  padding: var(--space-8) 0 var(--space-5);
+  margin-top: var(--space-8);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+.footer-col h4 {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-3);
+  font-family: var(--font-display);
+}
+.footer-col a {
+  display: block;
+  color: var(--fg-2);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  padding: var(--space-1) 0;
+  transition: color var(--motion-fast) var(--ease-standard);
+}
+.footer-col a:hover { color: var(--accent); }
+.footer-bottom {
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--muted);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-soft);
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ===== Responsive refinements ===== */
+@media (max-width: 639px) {
+  h1 { font-size: var(--text-2xl); }
+  .top-nav { padding-inline: var(--container-gutter-phone); }
+  .tab-row { gap: var(--space-1); }
+  .tab-btn { padding: var(--space-1) var(--space-3); font-size: var(--text-xs); }
+  .converter-card .panel-body { padding: var(--space-4); }
+  .val-item { grid-template-columns: 1fr; }
+  .all-values { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- Top Nav -->
+<nav class="top-nav">
+  <a href="/" style="display:flex;align-items:center;gap:var(--space-2);font-weight:700;font-size:var(--text-base);color:var(--fg);font-family:var(--font-display);letter-spacing:var(--tracking-display);">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    단위변환기
+  </a>
+  <div class="nav-links">
+    <a href="/">변환기</a>
+    <a href="/how-to.html">사용법</a>
+    <a href="/faq.html">FAQ</a>
+  </div>
+</nav>
+
+<!-- Header Ad -->
+<div class="ad-wrap">
+  <div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;">
+    <span>Advertisement 728x90</span>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="converter-hero">
+  <div class="container stack" style="align-items:center;">
+    <p class="eyebrow">Unit Converter</p>
+    <h1 style="margin-inline:auto;">모든 단위 변환, 한 곳에서</h1>
+    <p class="lead" style="margin-inline:auto;text-align:center;">길이, 무게, 온도, 속도, 면적, 부피 등 모든 단위를 실시간으로 변환하세요.</p>
+
+    <div class="search-wrap" style="margin-top:var(--space-5);">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="searchInput" placeholder="변환할 단위 검색 (길이, 온도...)" autocomplete="off">
+    </div>
+
+    <div class="tab-row" id="categoryTabs" role="tablist">
+      <button class="tab-btn active" data-cat="length" role="tab" aria-selected="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/></svg>
+        길이
+      </button>
+      <button class="tab-btn" data-cat="weight" role="tab" aria-selected="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        무게
+      </button>
+      <button class="tab-btn" data-cat="temperature" role="tab" aria-selected="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+        온도
+      </button>
+      <button class="tab-btn" data-cat="speed" role="tab" aria-selected="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        속도
+      </button>
+      <button class="tab-btn" data-cat="area" role="tab" aria-selected="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+        면적
+      </button>
+      <button class="tab-btn" data-cat="volume" role="tab" aria-selected="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M9 4v16"/><path d="M15 4v16"/><path d="M4 9h16"/><path d="M4 15h16"/></svg>
+        부피
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Main Content -->
+<main class="container">
+  <div class="content-layout">
+
+    <!-- Converter Area -->
+    <div>
+
+      <!-- Length -->
+      <div class="converter-card" id="card-length" data-category="length">
+        <article class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:center;gap:var(--space-3);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/></svg>
+              <h3>길이 변환</h3>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="conversion-pair">
+              <div class="conv-group">
+                <label for="lengthFromVal">변환할 값</label>
+                <div class="conv-row">
+                  <select id="lengthFromUnit" onchange="convert('length')">
+                    <option value="mm">mm</option>
+                    <option value="cm" selected>cm</option>
+                    <option value="m">m</option>
+                    <option value="km">km</option>
+                    <option value="in">in</option>
+                    <option value="ft">ft</option>
+                    <option value="yd">yd</option>
+                    <option value="mile">mile</option>
+                  </select>
+                  <input type="number" id="lengthFromVal" placeholder="값 입력" oninput="convert('length')" autocomplete="off">
+                </div>
+              </div>
+              <div class="swap-wrap">
+                <button class="btn btn-secondary btn-icon" onclick="swapUnits('length')" title="단위 맞바꾸기" aria-label="단위 맞바꾸기">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                </button>
+              </div>
+              <div class="conv-group">
+                <label for="lengthToVal">변환 결과</label>
+                <div class="conv-row">
+                  <select id="lengthToUnit" onchange="convert('length')">
+                    <option value="mm">mm</option>
+                    <option value="cm">cm</option>
+                    <option value="m" selected>m</option>
+                    <option value="km">km</option>
+                    <option value="in">in</option>
+                    <option value="ft">ft</option>
+                    <option value="yd">yd</option>
+                    <option value="mile">mile</option>
+                  </select>
+                  <input type="text" id="lengthToVal" readonly placeholder="결과">
+                </div>
+              </div>
+            </div>
+            <div class="all-values hidden" id="lengthAll"></div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Weight -->
+      <div class="converter-card hidden" id="card-weight" data-category="weight">
+        <article class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:center;gap:var(--space-3);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              <h3>무게 변환</h3>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="conversion-pair">
+              <div class="conv-group">
+                <label for="weightFromVal">변환할 값</label>
+                <div class="conv-row">
+                  <select id="weightFromUnit" onchange="convert('weight')">
+                    <option value="g" selected>g</option>
+                    <option value="kg">kg</option>
+                    <option value="ton">t</option>
+                    <option value="lb">lb</option>
+                    <option value="oz">oz</option>
+                  </select>
+                  <input type="number" id="weightFromVal" placeholder="값 입력" oninput="convert('weight')" autocomplete="off">
+                </div>
+              </div>
+              <div class="swap-wrap">
+                <button class="btn btn-secondary btn-icon" onclick="swapUnits('weight')" title="단위 맞바꾸기" aria-label="단위 맞바꾸기">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                </button>
+              </div>
+              <div class="conv-group">
+                <label for="weightToVal">변환 결과</label>
+                <div class="conv-row">
+                  <select id="weightToUnit" onchange="convert('weight')">
+                    <option value="g">g</option>
+                    <option value="kg" selected>kg</option>
+                    <option value="ton">t</option>
+                    <option value="lb">lb</option>
+                    <option value="oz">oz</option>
+                  </select>
+                  <input type="text" id="weightToVal" readonly placeholder="결과">
+                </div>
+              </div>
+            </div>
+            <div class="all-values hidden" id="weightAll"></div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Temperature -->
+      <div class="converter-card hidden" id="card-temperature" data-category="temperature">
+        <article class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:center;gap:var(--space-3);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+              <h3>온도 변환</h3>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="conversion-pair">
+              <div class="conv-group">
+                <label for="tempFromVal">변환할 값</label>
+                <div class="conv-row">
+                  <select id="tempFromUnit" onchange="convert('temperature')">
+                    <option value="C" selected>C</option>
+                    <option value="F">F</option>
+                    <option value="K">K</option>
+                  </select>
+                  <input type="number" id="tempFromVal" placeholder="값 입력" oninput="convert('temperature')" autocomplete="off">
+                </div>
+              </div>
+              <div class="swap-wrap">
+                <button class="btn btn-secondary btn-icon" onclick="swapUnits('temperature')" title="단위 맞바꾸기" aria-label="단위 맞바꾸기">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                </button>
+              </div>
+              <div class="conv-group">
+                <label for="tempToVal">변환 결과</label>
+                <div class="conv-row">
+                  <select id="tempToUnit" onchange="convert('temperature')">
+                    <option value="C">C</option>
+                    <option value="F" selected>F</option>
+                    <option value="K">K</option>
+                  </select>
+                  <input type="text" id="tempToVal" readonly placeholder="결과">
+                </div>
+              </div>
+            </div>
+            <div class="all-values hidden" id="tempAll"></div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Speed -->
+      <div class="converter-card hidden" id="card-speed" data-category="speed">
+        <article class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:center;gap:var(--space-3);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <h3>속도 변환</h3>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="conversion-pair">
+              <div class="conv-group">
+                <label for="speedFromVal">변환할 값</label>
+                <div class="conv-row">
+                  <select id="speedFromUnit" onchange="convert('speed')">
+                    <option value="kmh" selected>km/h</option>
+                    <option value="mph">mph</option>
+                    <option value="knot">kn</option>
+                    <option value="mach">mach</option>
+                  </select>
+                  <input type="number" id="speedFromVal" placeholder="값 입력" oninput="convert('speed')" autocomplete="off">
+                </div>
+              </div>
+              <div class="swap-wrap">
+                <button class="btn btn-secondary btn-icon" onclick="swapUnits('speed')" title="단위 맞바꾸기" aria-label="단위 맞바꾸기">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                </button>
+              </div>
+              <div class="conv-group">
+                <label for="speedToVal">변환 결과</label>
+                <div class="conv-row">
+                  <select id="speedToUnit" onchange="convert('speed')">
+                    <option value="kmh">km/h</option>
+                    <option value="mph" selected>mph</option>
+                    <option value="knot">kn</option>
+                    <option value="mach">mach</option>
+                  </select>
+                  <input type="text" id="speedToVal" readonly placeholder="결과">
+                </div>
+              </div>
+            </div>
+            <div class="all-values hidden" id="speedAll"></div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Area -->
+      <div class="converter-card hidden" id="card-area" data-category="area">
+        <article class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:center;gap:var(--space-3);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+              <h3>면적 변환</h3>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="conversion-pair">
+              <div class="conv-group">
+                <label for="areaFromVal">변환할 값</label>
+                <div class="conv-row">
+                  <select id="areaFromUnit" onchange="convert('area')">
+                    <option value="sqm" selected>m<sup>2</sup></option>
+                    <option value="sqft">ft<sup>2</sup></option>
+                    <option value="acre">ac</option>
+                    <option value="hectare">ha</option>
+                  </select>
+                  <input type="number" id="areaFromVal" placeholder="값 입력" oninput="convert('area')" autocomplete="off">
+                </div>
+              </div>
+              <div class="swap-wrap">
+                <button class="btn btn-secondary btn-icon" onclick="swapUnits('area')" title="단위 맞바꾸기" aria-label="단위 맞바꾸기">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                </button>
+              </div>
+              <div class="conv-group">
+                <label for="areaToVal">변환 결과</label>
+                <div class="conv-row">
+                  <select id="areaToUnit" onchange="convert('area')">
+                    <option value="sqm">m<sup>2</sup></option>
+                    <option value="sqft" selected>ft<sup>2</sup></option>
+                    <option value="acre">ac</option>
+                    <option value="hectare">ha</option>
+                  </select>
+                  <input type="text" id="areaToVal" readonly placeholder="결과">
+                </div>
+              </div>
+            </div>
+            <div class="all-values hidden" id="areaAll"></div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Volume -->
+      <div class="converter-card hidden" id="card-volume" data-category="volume">
+        <article class="panel">
+          <div class="panel-head">
+            <div style="display:flex;align-items:center;gap:var(--space-3);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M9 4v16"/><path d="M15 4v16"/><path d="M4 9h16"/><path d="M4 15h16"/></svg>
+              <h3>부피 변환</h3>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="conversion-pair">
+              <div class="conv-group">
+                <label for="volumeFromVal">변환할 값</label>
+                <div class="conv-row">
+                  <select id="volumeFromUnit" onchange="convert('volume')">
+                    <option value="ml" selected>mL</option>
+                    <option value="L">L</option>
+                    <option value="gal">gal</option>
+                    <option value="cup">cup</option>
+                  </select>
+                  <input type="number" id="volumeFromVal" placeholder="값 입력" oninput="convert('volume')" autocomplete="off">
+                </div>
+              </div>
+              <div class="swap-wrap">
+                <button class="btn btn-secondary btn-icon" onclick="swapUnits('volume')" title="단위 맞바꾸기" aria-label="단위 맞바꾸기">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                </button>
+              </div>
+              <div class="conv-group">
+                <label for="volumeToVal">변환 결과</label>
+                <div class="conv-row">
+                  <select id="volumeToUnit" onchange="convert('volume')">
+                    <option value="ml">mL</option>
+                    <option value="L" selected>L</option>
+                    <option value="gal">gal</option>
+                    <option value="cup">cup</option>
+                  </select>
+                  <input type="text" id="volumeToVal" readonly placeholder="결과">
+                </div>
+              </div>
+            </div>
+            <div class="all-values hidden" id="volumeAll"></div>
+          </div>
+        </article>
+      </div>
+
+    </div>
+
+    <!-- Sidebar Ad -->
+    <aside class="sidebar-ad">
+      <div class="ad-placeholder" style="width:300px;height:250px;max-width:100%;">
+        <span>Advertisement 300x250</span>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>단위변환기</h4>
+        <a href="/">길이 변환</a>
+        <a href="/">무게 변환</a>
+        <a href="/">온도 변환</a>
+        <a href="/">속도 변환</a>
+        <a href="/">면적 변환</a>
+        <a href="/">부피 변환</a>
+      </div>
+      <div class="footer-col">
+        <h4>도움말</h4>
+        <a href="/how-to.html">사용 방법</a>
+        <a href="/faq.html">자주 묻는 질문</a>
+      </div>
+      <div class="footer-col">
+        <h4>정보</h4>
+        <a href="/about.html">소개</a>
+        <a href="/contact.html">문의하기</a>
+        <a href="/privacy.html">개인정보처리방침</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 단위변환기. 모든 권리 보유.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== Conversion Factors (base unit) =====
+const CONV = {
+  length: {
+    base: 'm',
+    toBase: { mm: 0.001, cm: 0.01, m: 1, km: 1000, in: 0.0254, ft: 0.3048, yd: 0.9144, mile: 1609.344 },
+    names: { mm: 'mm', cm: 'cm', m: 'm', km: 'km', in: 'in', ft: 'ft', yd: 'yd', mile: 'mile' }
+  },
+  weight: {
+    base: 'g',
+    toBase: { g: 1, kg: 1000, ton: 1e6, lb: 453.59237, oz: 28.349523125 },
+    names: { g: 'g', kg: 'kg', ton: 't', lb: 'lb', oz: 'oz' }
+  },
+  temperature: {
+    special: true
+  },
+  speed: {
+    base: 'kmh',
+    toBase: { kmh: 1, mph: 1.609344, knot: 1.852, mach: 1234.8 },
+    names: { kmh: 'km/h', mph: 'mph', knot: 'kn', mach: 'mach' }
+  },
+  area: {
+    base: 'sqm',
+    toBase: { sqm: 1, sqft: 0.09290304, acre: 4046.8564224, hectare: 10000 },
+    names: { sqm: 'm\u00b2', sqft: 'ft\u00b2', acre: 'ac', hectare: 'ha' }
+  },
+  volume: {
+    base: 'ml',
+    toBase: { ml: 1, L: 1000, gal: 3785.411784, cup: 236.5882365 },
+    names: { ml: 'mL', L: 'L', gal: 'gal', cup: 'cup' }
+  }
+};
+
+function tempToK(value, from) {
+  if (from === 'C') return value + 273.15;
+  if (from === 'F') return (value + 459.67) * 5/9;
+  return value;
+}
+function tempFromK(value, to) {
+  if (to === 'C') return value - 273.15;
+  if (to === 'F') return value * 9/5 - 459.67;
+  return value;
+}
+
+function formatNum(v) {
+  if (v === undefined || v === null || isNaN(v)) return '';
+  if (Math.abs(v) >= 1e9) return v.toExponential(4);
+  if (Number.isInteger(v) && Math.abs(v) < 1e15) return v.toString();
+  return parseFloat(v.toFixed(8)).toString();
+}
+
+function convertAll(cat, fromVal, fromUnit) {
+  const cfg = CONV[cat];
+  if (!fromVal || isNaN(fromVal)) return {};
+  const val = parseFloat(fromVal);
+  const results = {};
+  if (cfg.special) {
+    const k = tempToK(val, fromUnit);
+    for (const u of ['C','F','K']) {
+      results[u] = tempFromK(k, u);
+    }
+  } else {
+    const base = val * cfg.toBase[fromUnit];
+    for (const [u, factor] of Object.entries(cfg.toBase)) {
+      results[u] = base / factor;
+    }
+  }
+  return results;
+}
+
+function convert(cat) {
+  const prefixMap = { length: 'length', weight: 'weight', temperature: 'temp', speed: 'speed', area: 'area', volume: 'volume' };
+  const p = prefixMap[cat];
+  const fromVal = document.getElementById(p + 'FromVal');
+  const fromUnit = document.getElementById(p + 'FromUnit');
+  const toVal = document.getElementById(p + 'ToVal');
+  const toUnit = document.getElementById(p + 'ToUnit');
+  const allDiv = document.getElementById(p + 'All');
+  if (!fromVal || !fromUnit || !toVal || !toUnit) return;
+
+  const results = convertAll(cat, fromVal.value, fromUnit.value);
+  if (!results || Object.keys(results).length === 0) {
+    toVal.value = '';
+    allDiv.classList.add('hidden');
+    return;
+  }
+
+  toVal.value = formatNum(results[toUnit.value]);
+
+  const cfg = CONV[cat];
+  const names = cfg.special ? { C: 'C', F: 'F', K: 'K' } : cfg.names;
+  let html = '';
+  for (const [u, v] of Object.entries(results)) {
+    const label = names[u] || u;
+    html += '<div class="val-item"><span class="val-label">' + label + '</span><span class="val-number">' + formatNum(v) + '</span></div>';
+  }
+  allDiv.innerHTML = html;
+  allDiv.classList.remove('hidden');
+}
+
+// ===== Category Tab Switching =====
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    this.classList.add('active');
+    this.setAttribute('aria-selected', 'true');
+    const cat = this.dataset.cat;
+    document.querySelectorAll('.converter-card').forEach(c => c.classList.add('hidden'));
+    const card = document.getElementById('card-' + cat);
+    if (card) {
+      card.classList.remove('hidden');
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// ===== Search Filtering =====
+document.getElementById('searchInput').addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    const text = btn.textContent.toLowerCase();
+    const match = !q || text.includes(q);
+    btn.style.display = match ? '' : 'none';
+  });
+});
+
+// ===== Swap Units =====
+function swapUnits(cat) {
+  const prefixMap = { length: 'length', weight: 'weight', temperature: 'temp', speed: 'speed', area: 'area', volume: 'volume' };
+  const p = prefixMap[cat];
+  const fromUnit = document.getElementById(p + 'FromUnit');
+  const toUnit = document.getElementById(p + 'ToUnit');
+  const fromVal = document.getElementById(p + 'FromVal');
+  const toVal = document.getElementById(p + 'ToVal');
+
+  // Swap unit selections
+  const tmpUnit = fromUnit.value;
+  fromUnit.value = toUnit.value;
+  toUnit.value = tmpUnit;
+
+  // Swap values (toVal -> fromVal, and clear toVal to trigger recalc)
+  const tmpVal = fromVal.value;
+  fromVal.value = toVal.value;
+  toVal.value = '';
+
+  convert(cat);
+
+  // If from had no value but to had one, set it properly after convert
+  if (!tmpVal && toVal.value) {
+    fromVal.value = toVal.value;
+    toVal.value = '';
+    convert(cat);
+  }
+}
+
+// ===== Initialize =====
+convert('length');
+</script>
+</div>
+</body>
+</html>
